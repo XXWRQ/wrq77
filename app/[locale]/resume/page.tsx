@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
+import { PageControls } from '@/components/page-controls';
 import { isLocale, profiles, ui } from '@/lib/site';
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
@@ -16,6 +17,7 @@ export default async function ResumePage({ params }: { params: Promise<{ locale:
   const t = ui[locale];
   return (
     <main id="main-content" className="content-shell page-main resume-page">
+      <PageControls locale={locale} homeHref={`/${locale}`} languageHref={`/${locale === 'zh' ? 'en' : 'zh'}/resume`} />
       <header className="page-intro resume-intro">
         <p className="eyebrow">{t.resume} · CV</p>
         <h1>{t.resumeTitle}</h1>

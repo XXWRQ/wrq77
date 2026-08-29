@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
-import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { ArticleCard } from '@/components/article-card';
+import { PageControls } from '@/components/page-controls';
 import { getArticles } from '@/lib/content';
 import { isLocale, taxonomy, type CategoryId, type TagId, ui } from '@/lib/site';
 
@@ -32,14 +32,15 @@ export default async function NotesPage({ params, searchParams }: { params: Prom
 
   return (
     <main id="main-content" className="content-shell page-main notes-page">
+      <PageControls locale={locale} homeHref={`/${locale}`} languageHref={`/${locale === 'zh' ? 'en' : 'zh'}/notes`} />
       <header className="page-intro notes-intro"><p className="eyebrow">{t.notes} · Journal</p><h1>{t.notesTitle}</h1><p>{t.notesIntro}</p></header>
       <section className="filters" aria-label={locale === 'zh' ? '文章筛选' : 'Note filters'}>
-        <div className="filter-group"><p>{t.categories}</p><div className="filter-row"><Link className={!category ? 'active' : ''} href={`/${locale}/notes`}>{t.all}</Link>{Object.entries(taxonomy.categories).map(([id, label]) => <Link className={category === id ? 'active' : ''} aria-current={category === id ? 'true' : undefined} key={id} href={filterHref(locale, current, 'category', id)}>{label[locale]}</Link>)}</div></div>
-        <div className="filter-group"><p>{t.tags}</p><div className="filter-row">{Object.entries(taxonomy.tags).map(([id, label]) => <Link className={tag === id ? 'active' : ''} aria-current={tag === id ? 'true' : undefined} key={id} href={filterHref(locale, current, 'tag', id)}>#{label[locale]}</Link>)}</div></div>
-        {(category || tag) && <Link className="clear-filter" href={`/${locale}/notes`}>{t.clear} ×</Link>}
+        <div className="filter-group"><p>{t.categories}</p><div className="filter-row"><a className={!category ? 'active' : ''} href={`/${locale}/notes`}>{t.all}</a>{Object.entries(taxonomy.categories).map(([id, label]) => <a className={category === id ? 'active' : ''} aria-current={category === id ? 'true' : undefined} key={id} href={filterHref(locale, current, 'category', id)}>{label[locale]}</a>)}</div></div>
+        <div className="filter-group"><p>{t.tags}</p><div className="filter-row">{Object.entries(taxonomy.tags).map(([id, label]) => <a className={tag === id ? 'active' : ''} aria-current={tag === id ? 'true' : undefined} key={id} href={filterHref(locale, current, 'tag', id)}>#{label[locale]}</a>)}</div></div>
+        {(category || tag) && <a className="clear-filter" href={`/${locale}/notes`}>{t.clear} ×</a>}
       </section>
       <section className="article-list" aria-live="polite">
-        {articles.length > 0 ? articles.map((article, index) => <ArticleCard key={article.translationKey} article={article} locale={locale} index={index} />) : <div className="empty-state"><span>Ø</span><h2>{t.noResults}</h2><Link href={`/${locale}/notes`}>{t.reset} →</Link></div>}
+        {articles.length > 0 ? articles.map((article, index) => <ArticleCard key={article.translationKey} article={article} locale={locale} index={index} />) : <div className="empty-state"><span>Ø</span><h2>{t.noResults}</h2><a href={`/${locale}/notes`}>{t.reset} →</a></div>}
       </section>
     </main>
   );

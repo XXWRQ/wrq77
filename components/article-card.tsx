@@ -1,4 +1,3 @@
-import Link from 'next/link';
 import type { Article } from '@/lib/content';
 import { formatDate, taxonomy, type Locale } from '@/lib/site';
 
@@ -12,13 +11,13 @@ export function ArticleCard({ article, locale, index }: { article: Article; loca
           <time dateTime={article.publishedAt}>{formatDate(article.publishedAt, locale)}</time>
           <span>{article.readingMinutes} {locale === 'zh' ? '分钟' : 'min'}</span>
         </div>
-        <h2><Link href={`/${locale}/notes/${article.slug}`}>{article.title}</Link></h2>
+        <h2><a href={`/${locale}/notes/${article.slug}`}>{article.title}</a></h2>
         <p>{article.excerpt}</p>
         <div className="tag-row" aria-label={locale === 'zh' ? '文章标签' : 'Article tags'}>
           {article.tags.map((tag) => <span key={tag}>#{taxonomy.tags[tag][locale]}</span>)}
         </div>
       </div>
-      <Link className="round-arrow" href={`/${locale}/notes/${article.slug}`} aria-label={article.title}>↗</Link>
+      <a className="round-arrow" href={`/${locale}/notes/${article.slug}`} aria-label={article.title}>↗</a>
     </article>
   );
 }
