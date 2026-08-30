@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { RouterLink } from 'vue-router';
 import type { Article } from '@/lib/content';
-import { formatDate, taxonomy, type Locale } from '@/lib/site';
+import { taxonomy, type Locale } from '@/lib/site';
 
 defineProps<{ article: Article; locale: Locale; index: number }>();
 </script>
@@ -12,12 +12,10 @@ defineProps<{ article: Article; locale: Locale; index: number }>();
     <div class="article-card-copy">
       <div class="article-meta">
         <span>{{ taxonomy.categories[article.category][locale] }}</span>
-        <time :datetime="article.publishedAt">{{ formatDate(article.publishedAt, locale) }}</time>
-        <span>{{ article.readingMinutes }} {{ locale === 'zh' ? '分钟' : 'min' }}</span>
       </div>
       <h2><RouterLink :to="`/${locale}/notes/${article.slug}`">{{ article.title }}</RouterLink></h2>
-      <p>{{ article.excerpt }}</p>
-      <div class="tag-row" :aria-label="locale === 'zh' ? '文章标签' : 'Article tags'">
+      <p v-if="locale !== 'zh'">{{ article.excerpt }}</p>
+      <div v-if="article.category === 'learning'" class="tag-row" :aria-label="locale === 'zh' ? '文章标签' : 'Article tags'">
         <span v-for="tag in article.tags" :key="tag">#{{ taxonomy.tags[tag][locale] }}</span>
       </div>
     </div>

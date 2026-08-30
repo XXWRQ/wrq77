@@ -9,6 +9,7 @@ export type Article = {
   excerpt: string;
   publishedAt: string;
   updatedAt?: string;
+  order?: number;
   category: CategoryId;
   tags: TagId[];
   draft: boolean;
@@ -65,46 +66,40 @@ function parseArticle(path: string, source: string): Article {
     locale, translationKey: String(data.translationKey), slug, title: String(data.title),
     excerpt: String(data.excerpt), publishedAt: normalizeDate(data.publishedAt),
     updatedAt: data.updatedAt ? normalizeDate(data.updatedAt) : undefined,
+    order: data.order ? Number(data.order) : undefined,
     category, tags, draft: Boolean(data.draft), readingMinutes: Number(data.readingMinutes ?? 5), body: content.trim(),
   };
 }
 
 const allArticles = Object.entries(noteFiles).map(([path, source]) => parseArticle(path, source));
 
-function validatePublishedPairs() {
+function validatePublishedKeys() {
   const seen = new Set<string>();
-  const byKey = new Map<string, Set<Locale>>();
   for (const article of allArticles.filter((item) => !item.draft)) {
     const uniqueKey = `${article.locale}:${article.translationKey}`;
     if (seen.has(uniqueKey)) throw new Error(`Duplicate published translation key: ${uniqueKey}`);
     seen.add(uniqueKey);
-    const pair = byKey.get(article.translationKey) ?? new Set<Locale>();
-    pair.add(article.locale);
-    byKey.set(article.translationKey, pair);
-  }
-  for (const [key, pair] of byKey) {
-    if (!pair.has('zh') || !pair.has('en')) throw new Error(`Published article “${key}” must have zh and en versions`);
   }
 }
 
-validatePublishedPairs();
+validatePublishedKeys();
 
 export function getArticles(locale: Locale) {
   return allArticles
     .filter((article) => article.locale === locale && !article.draft)
-    .sort((a, b) => b.publishedAt.localeCompare(a.publishedAt));
+    .sort((a, b) => b.publishedAt.localeCompare(a.publishedAt)
+      || (a.order ?? Number.MAX_SAFE_INTEGER) - (b.order ?? Number.MAX_SAFE_INTEGER));
 }
 
 export function getArticle(locale: Locale, slug: string) {
   return getArticles(locale).find((article) => article.slug === slug);
 }
 
-export function getTranslation(article: Article, locale: Locale) {
-  return getArticles(locale).find((candidate) => candidate.translationKey === article.translationKey);
-}
-
 function plainHeading(value: string) {
-  return value.replace(/[`*_~\[\]]/g, '').replace(/\([^)]*\)/g, '').trim();
+  return value
+    .replace(/<[^>]+>/g, '')
+    .replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"').replace(/&#39;/g, "'")
+    .replace(/[`*_~\[\]]/g, '').replace(/\([^)]*\)/g, '').trim();
 }
 
 function slugify(value: string) {
@@ -116,14 +111,20 @@ export function renderMarkdown(body: string): { html: string; toc: TocItem[] } {
   const counts = new Map<string, number>();
   const withAnchors = body.split('\n').map((line) => {
     const match = /^(#{2,3})\s+(.+)$/.exec(line);
-    if (!match) return line;
-    const title = plainHeading(match[2]);
-    const base = slugify(title);
-    const count = counts.get(base) ?? 0;
-    counts.set(base, count + 1);
-    const id = count === 0 ? base : `${base}-${count + 1}`;
-    toc.push({ id, title, depth: match[1].length as 2 | 3 });
-    return `<span id="${id}" class="heading-anchor" aria-hidden="true"></span>\n${line}`;
+    if (match) {
+      const title = plainHeading(match[2]);
+      const base = slugify(title);
+      const count = counts.get(base) ?? 0;
+      counts.set(base, count + 1);
+      const id = count === 0 ? base : `${base}-${count + 1}`;
+      toc.push({ id, title, depth: match[1].length as 2 | 3 });
+      return `<span id="${id}" class="heading-anchor" aria-hidden="true"></span>\n${line}`;
+    }
+    const htmlHeading = /^<h([23])\b[^>]*\bid="([^"]+)"[^>]*>([\s\S]*?)<\/h\1>$/i.exec(line.trim());
+    if (htmlHeading) {
+      toc.push({ id: htmlHeading[2], title: plainHeading(htmlHeading[3]), depth: Number(htmlHeading[1]) as 2 | 3 });
+    }
+    return line;
   }).join('\n');
   const html = marked.parse(withAnchors, { gfm: true, breaks: false }) as string;
   return { html, toc };

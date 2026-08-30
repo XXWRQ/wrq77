@@ -12,7 +12,7 @@ export const siteOrigin =
 export const taxonomy = {
   categories: {
     methods: { zh: '方法', en: 'Methods' },
-    design: { zh: '设计', en: 'Design' },
+    design: { zh: '软件应用', en: 'Software Applications' },
     learning: { zh: '学习', en: 'Learning' },
   },
   tags: {
@@ -20,6 +20,9 @@ export const taxonomy = {
     practice: { zh: '实践', en: 'Practice' },
     systems: { zh: '系统思考', en: 'Systems' },
     reflection: { zh: '复盘', en: 'Reflection' },
+    coreRag: { zh: '核心RAG链路', en: 'Core RAG' },
+    webServices: { zh: 'Web服务基础', en: 'Web Services' },
+    governanceOps: { zh: '治理与运维', en: 'Governance & Operations' },
   },
 } as const;
 
@@ -70,9 +73,9 @@ export const ui = {
     latestExperience: '最近经历', selectedNotes: '代表文章', allNotes: '查看全部文章',
     resumeTitle: '经历不是清单，而是问题、选择与结果。', resumeIntro: '以下内容均为占位示例。替换结构化资料后，页面会自动同步。',
     workExperience: '工作经历', education: '教育经历', capabilities: '能力', achievements: '代表成果',
-    notesTitle: '关于实践、系统与清晰表达的记录。', notesIntro: '这里收录正在形成的方法与思考。每篇公开文章都维护中英文版本。',
+    notesTitle: '这个知识库不是最全的，但是最干的！', notesIntro: '含盖了大模型、RAG、Agent，开始和我在知识的海洋里咕噜咕噜吧~',
     all: '全部', categories: '分类', tags: '标签', clear: '清除筛选', noResults: '没有符合当前筛选的文章。', reset: '查看全部文章',
-    minRead: '分钟阅读', contents: '目录', backToNotes: '返回文章列表', nextLanguage: 'Read in English',
+    minRead: '分钟阅读', contents: '目录', backToNotes: '返回文章列表',
     placeholder: '占位内容', footer: '一份仍在生长的个人档案。', lastUpdated: '最后更新',
   },
   en: {
@@ -83,7 +86,7 @@ export const ui = {
     workExperience: 'Experience', education: 'Education', capabilities: 'Capabilities', achievements: 'Selected outcomes',
     notesTitle: 'Notes on practice, systems, and making things clear.', notesIntro: 'A growing collection of methods and reflections. Every published note is maintained in both languages.',
     all: 'All', categories: 'Categories', tags: 'Tags', clear: 'Clear filters', noResults: 'No notes match the current filters.', reset: 'View all notes',
-    minRead: 'min read', contents: 'Contents', backToNotes: 'Back to notes', nextLanguage: '中文阅读',
+    minRead: 'min read', contents: 'Contents', backToNotes: 'Back to notes',
     placeholder: 'Placeholder content', footer: 'A personal archive, still in progress.', lastUpdated: 'Last updated',
   },
 } as const;

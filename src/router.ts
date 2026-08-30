@@ -1,6 +1,6 @@
 import { createRouter, createWebHistory, type RouteLocationNormalized } from 'vue-router';
-import { getArticle, getTranslation } from '@/lib/content';
-import { isLocale, profiles, siteOrigin, ui, type Locale } from '@/lib/site';
+import { getArticle } from '@/lib/content';
+import { profiles, siteOrigin, ui } from '@/lib/site';
 import HomeView from './views/HomeView.vue';
 import ResumeView from './views/ResumeView.vue';
 import NotesView from './views/NotesView.vue';
@@ -14,10 +14,14 @@ const router = createRouter({
   },
   routes: [
     { path: '/', redirect: '/zh' },
-    { path: '/:locale(zh|en)', name: 'home', component: HomeView },
-    { path: '/:locale(zh|en)/resume', name: 'resume', component: ResumeView },
-    { path: '/:locale(zh|en)/notes', name: 'notes', component: NotesView },
-    { path: '/:locale(zh|en)/notes/:slug', name: 'article', component: ArticleView },
+    { path: '/en', redirect: '/zh' },
+    { path: '/en/resume', redirect: '/zh/resume' },
+    { path: '/en/notes', redirect: (to) => ({ path: '/zh/notes', query: to.query }) },
+    { path: '/en/notes/:slug', redirect: (to) => ({ path: `/zh/notes/${String(to.params.slug)}`, query: to.query, hash: to.hash }) },
+    { path: '/zh', name: 'home', component: HomeView },
+    { path: '/zh/resume', name: 'resume', component: ResumeView },
+    { path: '/zh/notes', name: 'notes', component: NotesView },
+    { path: '/zh/notes/:slug', name: 'article', component: ArticleView },
     { path: '/:pathMatch(.*)*', name: 'not-found', component: NotFoundView },
   ],
 });
@@ -44,39 +48,32 @@ function upsertLink(rel: string, href: string, hreflang?: string) {
 }
 
 function routeSeo(to: RouteLocationNormalized) {
-  const rawLocale = String(to.params.locale ?? 'zh');
-  const locale: Locale = isLocale(rawLocale) ? rawLocale : 'zh';
-  let title: string = profiles[locale].name;
-  let description: string = profiles[locale].bio;
+  let title = '领域·展开~';
+  let description: string = profiles.zh.bio;
   let zhPath = '/zh';
-  let enPath = '/en';
 
   if (to.name === 'resume') {
-    title = ui[locale].resume;
+    title = '嘿嘿，献丑了~';
     zhPath = '/zh/resume';
-    enPath = '/en/resume';
   } else if (to.name === 'notes') {
-    title = ui[locale].notes;
-    description = ui[locale].notesIntro;
+    title = '一起来知识的海洋里~~咕噜咕噜~~';
+    description = ui.zh.notesIntro;
     zhPath = '/zh/notes';
-    enPath = '/en/notes';
   } else if (to.name === 'article') {
-    const article = getArticle(locale, String(to.params.slug));
+    const article = getArticle('zh', String(to.params.slug));
     if (article) {
       title = article.title;
       description = article.excerpt;
-      const translation = getTranslation(article, locale === 'zh' ? 'en' : 'zh');
-      zhPath = locale === 'zh' ? to.path : translation ? `/zh/notes/${translation.slug}` : '/zh';
-      enPath = locale === 'en' ? to.path : translation ? `/en/notes/${translation.slug}` : '/en';
+      zhPath = to.path;
     }
   } else if (to.name === 'not-found') {
-    title = '404 · Not found';
-    description = 'This page has not been written yet.';
+    title = '404 · 页面不存在';
+    description = '这一页还没有被写下。';
   }
 
   const canonical = `${siteOrigin}${to.path}`;
-  document.documentElement.lang = locale === 'zh' ? 'zh-CN' : 'en';
-  document.title = `${title} · ${profiles[locale].role}`;
+  document.documentElement.lang = 'zh-CN';
+  document.title = title;
   upsertMeta('meta[name="description"]', { name: 'description', content: description });
   upsertMeta('meta[property="og:title"]', { property: 'og:title', content: document.title });
   upsertMeta('meta[property="og:description"]', { property: 'og:description', content: description });
@@ -84,8 +81,8 @@ function routeSeo(to: RouteLocationNormalized) {
   upsertMeta('meta[name="twitter:title"]', { name: 'twitter:title', content: document.title });
   upsertMeta('meta[name="twitter:description"]', { name: 'twitter:description', content: description });
   upsertLink('canonical', canonical);
+  document.head.querySelectorAll('link[rel="alternate"][hreflang]').forEach((element) => element.remove());
   upsertLink('alternate', `${siteOrigin}${zhPath}`, 'zh-CN');
-  upsertLink('alternate', `${siteOrigin}${enPath}`, 'en');
   upsertLink('alternate', `${siteOrigin}${zhPath}`, 'x-default');
 }
 

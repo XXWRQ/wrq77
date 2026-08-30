@@ -1,13 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url><loc>https://wrq77.pages.dev/zh</loc></url>
-  <url><loc>https://wrq77.pages.dev/en</loc></url>
   <url><loc>https://wrq77.pages.dev/zh/resume</loc></url>
-  <url><loc>https://wrq77.pages.dev/en/resume</loc></url>
   <url><loc>https://wrq77.pages.dev/zh/notes</loc></url>
-  <url><loc>https://wrq77.pages.dev/en/notes</loc></url>
   <url><loc>https://wrq77.pages.dev/zh/notes/ambiguity-to-action</loc></url>
-  <url><loc>https://wrq77.pages.dev/en/notes/ambiguity-to-action</loc></url>
-  <url><loc>https://wrq77.pages.dev/zh/notes/personal-knowledge-system</loc></url>
-  <url><loc>https://wrq77.pages.dev/en/notes/personal-knowledge-system</loc></url>
+  <url><loc>https://wrq77.pages.dev/zh/notes/milvus-index-operations</loc></url>
+  <url><loc>https://wrq77.pages.dev/zh/notes/intent-classification</loc></url>
+  <url><loc>https://wrq77.pages.dev/zh/notes/retrieval-strategy</loc></url>
+  <url><loc>https://wrq77.pages.dev/zh/notes/query-rewrite-variants</loc></url>
+  <url><loc>https://wrq77.pages.dev/zh/notes/milvus-hybrid-search</loc></url>
+  <url><loc>https://wrq77.pages.dev/zh/notes/qaservice-orchestration</loc></url>
+  <url><loc>https://wrq77.pages.dev/zh/notes/rag-pipeline</loc></url>
+  <url><loc>https://wrq77.pages.dev/zh/notes/prompt-engineering</loc></url>
+  <url><loc>https://wrq77.pages.dev/zh/notes/fastapi-async</loc></url>
+  <url><loc>https://wrq77.pages.dev/zh/notes/app-entry-preflight</loc></url>
+  <url><loc>https://wrq77.pages.dev/zh/notes/knowledge-base-versioning</loc></url>
+  <url><loc>https://wrq77.pages.dev/zh/notes/data-isolation</loc></url>
+  <url><loc>https://wrq77.pages.dev/zh/notes/ingestion-pipeline</loc></url>
+  <url><loc>https://wrq77.pages.dev/zh/notes/rag-quality-evaluation</loc></url>
+  <url><loc>https://wrq77.pages.dev/zh/notes/testing-system</loc></url>
+  <url><loc>https://wrq77.pages.dev/zh/notes/observability-tracing</loc></url>
+  <url><loc>https://wrq77.pages.dev/zh/notes/docker-delivery-troubleshooting</loc></url>
 </urlset>
